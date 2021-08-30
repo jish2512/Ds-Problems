@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+//git test
+
 struct stack
 {
     int size;
@@ -19,35 +21,47 @@ int isEmpty(struct stack *s)
         return 1;
     return 0;
 }
+int match(char a, char b)
+{
+    if (a == '{' && b == '}')
+        return 1;
+    if (a == '(' && b == ')')
+        return 1;
+    if (a == '[' && b == ']')
+        return 1;
+    return 0;
+}
 int main(int argc, char const *argv[])
 {
-    char str[] = "7-(8(3*9)+(11+12)-8)()";
+    char str[] = "7-(8(3*9)+(11+12)[]}{-8)()";
     int len = sizeof(str) / sizeof(char);
     struct stack *s = (struct stack *)malloc(sizeof(struct stack));
-    s->size = len+1;
+    s->size = len + 1;
     s->top = -1;
     s->arr = (char *)malloc(s->size * sizeof(char));
     char underFlow = 'N';
     for (int i = 0; i < len; i++)
     {
-        if (str[i] == '(' && !isFull(s))
+        if (str[i] == '(' || str[i] == '{' || str[i] == '[')
         {
             s->top = s->top + 1;
             s->arr[s->top] = str[i];
         }
-        if (str[i] == ')')
+        if (str[i] == ')' || str[i] == '}' || str[i] == ']')
         {
             if (isEmpty(s))
             {
-                underFlow = 'Y';
                 break;
             }
+            char val = s->arr[s->top];
             s->top = s->top - 1;
+            if (!match(val, str[i]))
+            {
+                break;
+            }
         }
     }
-    if (underFlow == 'Y')
-        printf(" stack is underflow not balanced \n");
-    else if (s->top > -1)
+    if (s->top >-1)
         printf("UnBalanced\n");
     else
         printf("Balanced\n");
